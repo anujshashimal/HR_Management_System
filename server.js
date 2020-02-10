@@ -4,26 +4,30 @@ const port = 3000;
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const mongo =  require('mongodb')
-
+const expressHandlebars = require('express-handlebars')
 const router = express.Router()
+
 require('./db/mongose')
 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
+app.engine('hbs', expressHandlebars)
 
- app.get('/', (req, res) => {
+ app.get('/', (req, res) => 
+ {
      res.sendFile(__dirname + '/views/index.html')
  })
- app.use('/login', (req, res) => {
-    res.sendFile(__dirname + '/views/login.html')
-})
 
+ app.use('/login', (req, res) => {
+
+    res.sendFile(__dirname + '/views/login.html')
+
+})
 
 app.listen(port, () => {
     console.log("Server listening on port " + port);
 });
-
 
 const nameSchema = new mongoose.Schema({
     fname: String,
@@ -33,6 +37,7 @@ const nameSchema = new mongoose.Schema({
    });
 
 const User = mongoose.model('User', nameSchema);
+
 
 app.post('/home', (req, res) => {
     const userDet = new User(
@@ -62,17 +67,22 @@ app.post('/home', (req, res) => {
 });
 
 
-// router.get('/getData', function(req, res)  {
-//     const resuarray = []
-//     mongo.connect(url, function(err, db) {
-//         assert.equal(null, err)
-//         const cursor = db.collection('user').find()
-//             cursor.forEach(function(doc, err) {
-//                 assert.(null, err)
-//                 resuarray.push(doc)
-//             })
-//     })
-// })
+//get oarticular user details
+
+router.get('/list', (req, res) => {
+    User.find((err, docs) => {
+        if(!err) {
+            res.render('list', {data : docs})
+        }
+    })
+    res.send('Users Controller')
+})
+
+app.use('/users', User)
+
+
+
+
 
 
 
