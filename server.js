@@ -49,5 +49,17 @@ app.post('/home', (req, res) => {
 
    });
 
+   app.post("/login", function(req, res) {
+    if(req.body.specName && req.body.specPass) {
+        if(authenticated) {
+            var token = generateAndStoreRandomString(req.body.username);
+            res.redirect("http://your.domain/path?token=" + token);
+            return;
+        }
+        // Do something if username or password wrong
+    }
+    // Do something if no username or password
+});
+
  
 
